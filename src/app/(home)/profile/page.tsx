@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Profile() {
   return (
-      <main className="max-w-3xl mx-auto mt-8 space-y-6">
+      <main className="max-w-3xl mx-auto space-y-6">
         <Card>
           <CardContent className="p-0">
             <div className="h-32 bg-gradient-to-r from-orange-500 to-orange-400" />
