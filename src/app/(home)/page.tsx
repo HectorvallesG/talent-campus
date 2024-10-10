@@ -6,7 +6,7 @@ import { Bookmark, Search } from "lucide-react"
 export default function Home() {
   return (
       <main>
-        <section className="p-6 bg-gradient-to-br from-blue-100 via-blue-50 to-purple-100 rounded-lg max-w-4xl mx-auto shadow-lg">
+        <section className="p-6 bg-gradient-to-br from-blue-100 via-blue-50 to-purple-100 rounded-lg max-w-6xl mx-auto shadow-lg">
           <h1 className="font-semibold text-2xl">
             ¡Hey reclutador, encuentra el siguiente talento para tu equipo!    
           </h1>

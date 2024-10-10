@@ -4,7 +4,7 @@ import { Button } from "./ui/button"
 
 export const HeaderNav = () => {
   return (
-    <header className="bg-white border-b fixed w-full top-0 left-0 right-0 ">
+    <header className="bg-white border-b fixed w-full top-0 left-0 right-0 z-50">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
           {/* <Linkedin className="text-[#0a66c2] w-8 h-8" /> */}
           <div className="flex items-center gap-2">
