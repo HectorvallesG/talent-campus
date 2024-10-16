@@ -51,6 +51,8 @@ model Student {
   name      String
   lastName  String
   userName  String          @unique
+  faculty   String
+  specialty String
   profile   ProfileStudent?
   projects  Projects[]
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -76,8 +78,6 @@ model ProfileStudent {
   id        String   @id @unique @default(uuid())
   bio       String
   city      String
-  specialty String
-  faculty   String
   career    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
