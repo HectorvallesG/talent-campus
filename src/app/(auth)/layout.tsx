@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { University } from "lucide-react"
 
 interface LayoutProps {
@@ -9,9 +10,9 @@ export default function AccountLayout({ children }: LayoutProps) {
   return (
     <div className="flex gap-2">
      
-      <div className="flex-1">{children}</div>
+      <ScrollArea className="flex-1 h-screen">{children}</ScrollArea>
 
-      <section className="flex justify-end flex-col h-screen w-4/6 relative bg-[url(/images/student.jpg)] bg-no-repeat bg-center bg-cover p-8">
+      <section className="flex justify-end flex-col h-screen w-4/6 relative bg-[url(/images/student.jpg)] bg-no-repeat bg-center bg-cover p-8 max-lg:w-1/2 max-md:hidden">
         <div className="text-white flex flex-col gap-2">
 
             <h2 className="text-3xl font-semibold">
