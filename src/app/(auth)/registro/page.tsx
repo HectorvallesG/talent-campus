@@ -1,10 +1,12 @@
 "use client"
 
 import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Role } from "@/model/Role";
+import { CreateAccountRole, Role } from "@/model/Role";
 import { useEffect, useState } from "react";
+import { StudentForm } from "./_components/StudentForm";
+import { RecluiterForm } from "./_components/RecluiterForm";
 
-type CreateAccountRole = Role.Recruiter | Role.Student
+
 const rolesAccount = {
   [Role.Student]: 'Estudiante',
   [Role.Recruiter]: 'Reclutador'
@@ -44,6 +46,16 @@ export default function ReggiterAccount () {
             }
         </SelectContent>
       </Select>
+
+      <section>
+        {
+          role === Role.Student ? (
+            <StudentForm />
+          ) : (
+            <RecluiterForm />
+          )
+        }
+      </section>
     </main>
   )
 }
