@@ -11,12 +11,9 @@ export async function GET() {
           id: true,
           student: {
             select: {
-              user: {
-                select: {
-                  email: true,
-                },
-              },
               userName: true,
+              faculty: true,
+              specialty: true,
             },
           },
         },
@@ -26,10 +23,12 @@ export async function GET() {
       const mapProjects = projects.map((projects) => {
         return {
           id: projects.id,
-          userName: projects.student.userName,
           title: projects.title,
           description: projects.description,
           tags: projects.tags,
+          userName: projects.student.userName,
+          faculty: projects.student.faculty,
+          specialty: projects.student.specialty,
         };
       });
   
