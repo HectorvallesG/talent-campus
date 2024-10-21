@@ -18,6 +18,23 @@ export const BasicAccountSchema = z.object({
     .trim(),
 });
 
+//ignore if password min length is less than 6 a partir de basicAccountSchema
+export const loginSchema = z.object({
+  email: z.string({
+    required_error: "El correo es requerido",
+  })
+    .email({
+      message: "El correo no es válido",
+    })
+    .trim(),
+  password: z.string({
+    required_error: "La contraseña es requerida",
+  })
+  .trim(),
+})
+
+
+
 
 export const StudentSchema = z.object({
   name: z.string({
@@ -44,3 +61,4 @@ export const StudentSchema = z.object({
 
 export type BasicAccountSchemaModel = z.infer<typeof BasicAccountSchema>;
 export type StudentSchemaModel = z.infer<typeof StudentSchema>;
+export type LoginSchemaModel = z.infer<typeof loginSchema>;
