@@ -1,5 +1,7 @@
+import PageContainer from "@/components/layouts/PageContainer";
+
 export default function DashboardHome() {
   return (
-    <div>Dashboard Home</div>
+    <PageContainer>Dashboard Home</PageContainer>
   )
 }
