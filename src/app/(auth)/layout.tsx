@@ -1,12 +1,32 @@
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { University } from "lucide-react"
+import { options } from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
+import { Role } from "@/model/Role";
+import { getServerSession } from "next-auth";
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
 
-export default function AccountLayout({ children }: LayoutProps) {
+export default async function AccountLayout({ children }: LayoutProps) {
+
+  const session = await getServerSession(options);
+
+  if(session) {
+    const currentRol = session.user.rol; 
+    console.log(currentRol);
+
+    if(currentRol === Role.Admin || currentRol === Role.Recruiter){
+      redirect('/dashboard');
+    }
+
+    if (currentRol === Role.Student) {
+      redirect('/');
+    }
+  }
+
   return (
     <div className="flex gap-2">
      
