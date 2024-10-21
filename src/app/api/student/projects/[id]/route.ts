@@ -1,4 +1,4 @@
-import db from '../../../../db';
+import db from '../../../../../db';
 import { NextResponse } from 'next/server';
 interface params {
     params: { id: string};

@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,21 +9,64 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { ClockIcon } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function PostProject() {
+
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
+
 
   const form = useForm<projectModelData>({
     resolver: zodResolver(ProjectSchema),
     defaultValues:{
       title: '',
       description: '',
-      url: ''
+      url: '',
+      tags: ''
     }
   })
 
 
-  const onSubmit = (data:projectModelData) => {
-    console.log(data);
+  const onSubmit = async (data:projectModelData) => {
+    try {
+      setLoading(true)
+      const req = await fetch('/api/student/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      if(!req.ok){
+        throw new Error('Error al publicar el proyecto')
+      }
+
+      form.reset()
+      toast({
+        title: 'Proyecto publicado',
+        description: 'Tu proyecto ha sido publicado con exito',
+      })
+
+
+    } catch (error) {
+      if(error instanceof Error){
+        setError(error.message)
+        toast({
+          title: 'Error',
+          description: error.message,
+        })
+      }
+
+
+
+    }finally{
+      setLoading(false)
+    }
   };
 
 
@@ -68,6 +111,22 @@ export default function PostProject() {
           />
           <FormField
             control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ingresa algunas etiquetas que se relacionen a tu proyecto</FormLabel>
+                <FormControl>
+                  <Textarea className="resize-none" placeholder="Etiqueta" {...field} />
+                </FormControl>
+                <FormDescription>
+                 Agrega una etiqueta relacionada a tu proyecto separada por comas
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="url"
             render={({ field }) => (
               <FormItem>
@@ -79,11 +138,13 @@ export default function PostProject() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button disabled={loading} type="submit">
+            {loading ? 'Publicando...' : 'Publicar'}
+          </Button>
         </form>
       </Form>
 
-      <aside className="bg-white shadow-sm rounded-lg p-6 w-80 h-[600px] overflow-hidden">
+      {/* <aside className="bg-white shadow-sm rounded-lg p-6 w-80 h-[600px] overflow-hidden">
         <h2 className="font-semibold mb-4 flex gap-2 items-center">
           Proyectos recientes
           <ClockIcon className="w-4 h-4 ml-2" />
@@ -113,7 +174,7 @@ export default function PostProject() {
             </Link>
             
         </ScrollArea>
-      </aside>
+      </aside> */}
     </main>
   )
 }

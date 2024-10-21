@@ -20,6 +20,16 @@ export const ProjectSchema = z.object({
   }).url({
     message: 'La URL no es válida',
   }).trim(),
+  tags: z.string({
+    required_error: 'Las etiquetas son requeridas',
+  })
+  .trim()
+  .refine((tags) => {
+    const tagsArray = tags.split(',');
+    return tagsArray.length <= 5
+  }, {
+    message: 'No puedes agregar más de 5 etiquetas',
+  })
 });
 
 export type projectModelData = z.infer<typeof ProjectSchema>;
