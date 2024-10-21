@@ -14,12 +14,24 @@ export async function GET(req:Request, {params}:Params) {
       const student = await db.student.findUnique({
         where: {
           id
+        },
+        select:{
+          id: true,
+          name: true,
+          lastName: true,
+          specialty: true,
+          faculty: true,
+          user: {
+            select: {
+              email: true
+            }
+          }
         }
       });
 
 
-      NextResponse.json({data: student},{ status: 200 })
+      return NextResponse.json({data: student},{ status: 200 })
     } catch (error) {
-      NextResponse.json({ status: 500 })
+      return NextResponse.json({ status: 500 })
     }
   }

@@ -1,9 +1,28 @@
-import { JobCard } from "@/components/JobCard";
+"use client"
+import { GirdProjects } from "@/components/GirdProjects";
+import { JobCard, JobCardSkeleton } from "@/components/JobCard";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ProjectResponse } from "@/model/Projects";
 import { Search } from "lucide-react"
+import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const [projects, setProjects] = useState<ProjectResponse[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    fetch('/api/student/projects')
+      .then(res => res.json())
+      .then(data => {
+        setProjects(data.data)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+
   return (
       <main>
         <section className="p-6 bg-gradient-to-br from-blue-100 via-blue-50 to-purple-100 rounded-lg max-w-6xl mx-auto shadow-lg">
@@ -37,130 +56,25 @@ export default function Home() {
             </Button>
           </section>
   
-          <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 ">
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-            <JobCard
-              title="Frontend Developer"
-              experience="Developer, design, frontend"
-              description="We are looking for a frontend developer to join our team"
-              timePosted="2 days ago"
-            />
-           
-     
-          </section>
+          <GirdProjects>
+            {
+              loading && Array.from({length: 10}).map((_, index) => (
+                <JobCardSkeleton key={index} />
+              ))
+            }
+            {
+              projects.length > 0 && projects.map((project) => (
+                <JobCard
+                  key={project.id}
+                  idProject={project.id}
+
+                  {...project}
+                />
+              ))
+
+            }
+              
+          </GirdProjects>
        </div>
       </main>
   );
