@@ -5,11 +5,13 @@ import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { signOut, useSession } from "next-auth/react"
 
 export const HeaderNav = () => {
 
   const router = useRouter()
   const [searchText, setSearchText] = useState('')
+  const session = useSession()
 
   const handleSearch = () => {
     if (searchText.trim() === '') {
@@ -18,6 +20,7 @@ export const HeaderNav = () => {
 
     router.push(`/search?userName=${searchText}`)
   }
+
 
   return (
     <header className="bg-white border-b fixed w-full top-0 left-0 right-0 z-50">
@@ -34,11 +37,13 @@ export const HeaderNav = () => {
               <Search className="text-white" />
             </Button>  
           </search>
-          <nav className="flex space-x-6 text-sm text-gray-600">
+          <nav className="flex items-center space-x-6 text-sm text-gray-600">
             <a href="#">Inicio</a>
             <a href="#">Mi perfil</a>
             <a href="#">Publicar proyectos</a>
-            <a href="#">Salir</a>
+          {session.status === 'authenticated' &&  <Button onClick={() => signOut()}>
+              Salir
+            </Button>}
           </nav>
         </div>
       </header>
