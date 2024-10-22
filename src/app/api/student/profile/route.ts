@@ -93,7 +93,7 @@ export async function PATCH(request: NextRequest) {
         await db.$transaction(async (db) => {
 
             console.log(currentUser)
-            const profileStudent =  db.profileStudent.upsert({
+            await db.profileStudent.upsert({
                 where: {
                     studentId: currentUser.student?.id
                 },
@@ -110,11 +110,11 @@ export async function PATCH(request: NextRequest) {
                 update: {
                     bio: safeData.data.bio,
                     city: safeData.data.city,
-                    career: safeData.data.career
+                    career: safeData.data.career,
                 },
             })
 
-            const  user =  db.user.update({
+            await db.user.update({
                 where: {
                     id: session.user.id
                 },
@@ -124,16 +124,15 @@ export async function PATCH(request: NextRequest) {
                 }
             })
 
-            const student = db.student.update({
+            await db.student.update({
                 where: {
-                    userId: currentUser.student?.id
+                    id: currentUser.student?.id
                 },
                 data: {
                     faculty: safeData.data.faculty,
+                    
                 }
             })
-
-            await Promise.all([profileStudent, user, student])
 
 
         })

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ProfileSchema, ProfileSchemaModel } from "@/modules/account/account.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -29,6 +29,8 @@ export default function EditProfile() {
     }
   });
 
+  const router = useRouter()
+
   const onSubmit = async (data: ProfileSchemaModel) => {
     try {
       setLoading(true)
@@ -44,6 +46,13 @@ export default function EditProfile() {
         throw new Error('Error al actualizar el perfil')
       }
 
+      toast({
+        title: 'Perfil actualizado',
+        description: 'Tu perfil se ha actualizado correctamente'
+      })
+
+
+      router.push(`/profile/${data.userName}`)
 
     } catch (error) {
       if (error instanceof Error) {
