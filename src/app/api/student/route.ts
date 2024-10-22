@@ -13,11 +13,11 @@ export async function GET(req: NextRequest) {
                 lastName: true,
                 faculty: true,
                 specialty: true,
-                user: {
-                    select: {
-                        id: true,
-                        isActivated: true,
-                        email: true,
+                userId: true,
+                user:{
+                    select:{
+                        userName: true
+
                     }
                 }
             }
