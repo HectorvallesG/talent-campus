@@ -6,7 +6,21 @@ import { Role } from "@/model/Role";
 
 export async function GET(req: NextRequest) {
     try {
-        const recruiters = await db.recruiter.findMany()
+        const recruiters = await db.recruiter.findMany({
+            select: {
+                id: true,
+                name: true,
+                company: true,
+                user: {
+                    select: {
+                        id: true,
+                        isActivated: true,
+                        email: true,
+                        userName: true,
+                    }
+                }
+            }
+        })
 
         return NextResponse.json({data: recruiters}, {status: 200})
 
