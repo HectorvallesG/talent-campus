@@ -1,8 +1,12 @@
-export interface StudentResponde {
-  id: string
-  faculty: string
-  lastName: string
-  name: string
-  specialty: string
-  user:  {email: string}
+export interface StudentResponse {
+  id:        string;
+  name:      string;
+  lastName:  string;
+  faculty:   string;
+  specialty: string;
+  user: {
+    id:          string;
+    isActivated: string;
+    email:       string;
+  }
 }

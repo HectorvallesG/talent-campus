@@ -6,7 +6,22 @@ import { Role } from '@/model/Role';
 export async function GET(req: NextRequest) {
     try {
 
-        const students = await db.student.findMany()
+        const students = await db.student.findMany({
+            select: {
+                id: true,
+                name: true,
+                lastName: true,
+                faculty: true,
+                specialty: true,
+                user: {
+                    select: {
+                        id: true,
+                        isActivated: true,
+                        email: true,
+                    }
+                }
+            }
+        })
 
         return NextResponse.json({data: students}, {status: 200})
 
