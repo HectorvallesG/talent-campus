@@ -2,13 +2,12 @@
 
 import { GirdProjects } from "@/components/GirdProjects";
 import { JobCard } from "@/components/JobCard";
-import { LoadingPages } from "@/components/LoadingPages";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectResponse } from "@/model/Projects";
-import { StudentResponde } from "@/model/Student";
+import { StudentResponse } from "@/model/Student";
 import { BookMarked, Home, Info, Mail } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -22,7 +21,7 @@ export default function Project() {
   const [loading, setLoading] = useState(false)
   const [project, setProject] = useState<ProjectResponse>()
   const [fullUrl, setFullUrl] = useState('')
-  const [user, setUser] = useState<StudentResponde>()
+  const [user, setUser] = useState<StudentResponse>()
   
   const [loadingUser, setLoadingUser] = useState(false)
 
@@ -34,7 +33,6 @@ export default function Project() {
       .then(res => res.json())
       .then(data => {
         setProject(data.data)
-        console.log(data.data)
       })
       .finally(() => setLoading(false))
 
@@ -46,7 +44,6 @@ export default function Project() {
     fetch(`/api/student/${project?.studentId}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
         setUser(data.data)
       })
       .finally(() => setLoadingUser(false))
@@ -104,10 +101,18 @@ export default function Project() {
             </div> : <Skeleton className="w-[200px] h-4" />}
           </div>
 
-          {!loadingUser ? <Button onClick={() => sendMail(user?.user.email ?? '')}>
-            Enviar correo
-            <Mail className="w-4 h-4 ml-2" />
-          </Button> : <Skeleton className="w-[200px] h-4" />}
+          <div className="flex gap-2 items-center">
+            {!loadingUser ? <Button onClick={() => sendMail(user?.user.email ?? '')}>
+              Enviar correo
+              <Mail className="w-4 h-4 ml-2" />
+            </Button> : <Skeleton className="w-[200px] h-4" />}
+  
+            <Link href={`/profile/${user?.user.userName}`} className={buttonVariants({
+              variant: "outline",
+            })}>
+              Ver perfil
+            </Link>
+          </div>
         </header>
 
         <section className="px-6 py-3 mt-4 rounded-md">

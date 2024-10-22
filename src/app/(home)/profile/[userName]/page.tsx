@@ -2,58 +2,76 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { SearchProfileStudentResponse } from "@/model/Student";
 import { MapPin, Mail, School } from "lucide-react"
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export default function Profile() {
   const params = useParams()
 
+  const [userProfile, setUserProfile] = useState<SearchProfileStudentResponse>()
+  const session = useSession()
   useEffect(() => {
     fetch(`/api/student/profile?userName=${params.userName}`)
       .then(res => res.json())
       .then(data => {
+        setUserProfile(data.data)
         console.log(data)
       })
   }, [params])
+
+
+  const isMyProfile = () => {
+    if(session.status === 'authenticated'){
+      return session.data.user.id === userProfile?.user.id
+    }
+  }
+
+
   return (
       <main className="max-w-3xl mx-auto space-y-6">
         <Card>
           <CardContent className="p-0">
-            <div className="h-32 bg-gradient-to-r from-orange-500 to-orange-400" />
+            <div className="h-32 from-blue-100 via-blue-50 to-purple-100" />
             <div className="px-6 pb-6">
               <header className="flex justify-between items-end -mt-16">
                 <Avatar className="w-32 h-32 border-4 border-white">
                   <AvatarImage alt="Phoenix Baker" src="/placeholder.svg?height=128&width=128" />
-                  <AvatarFallback>PB</AvatarFallback>
+                  <AvatarFallback className="font-bold text-2xl">
+                    {userProfile?.user.userName[0].toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex gap-2">
                   <Button variant="outline">
                       Enviar correo
                       <Mail className="w-4 h-4 ml-2" />
                   </Button>
-                  <Link href='#' className={buttonVariants({
+                 {isMyProfile() && <Link href={`/profile/${userProfile?.user.userName}/edit`} className={buttonVariants({
                     variant: 'default'
                   })}>
                     Editar perfil
-                  </Link>
+                  </Link>}
                 </div>
               </header>
               <section className="mt-4 space-y-2">
-                <h1 className="text-2xl font-bold">Phoenix Baker</h1>
+                <h1 className="text-2xl font-bold">
+                  {userProfile?.name} {userProfile?.lastName}
+                </h1>
                 <p className="text-gray-600">
-                  Product Design, Research, Partnerships at Notion 
+                  {userProfile?.specialty}
                 </p>
                 <div className="flex items-center text-sm text-gray-500 space-x-2">
                   <MapPin className="w-4 h-4" />
-                  <span>México, Cd. Victoria</span>
+                  <span>{userProfile?.profile?.city}</span>
                 </div>
                 <div className="flex items-center text-sm text-gray-500 space-x-2">
                   <School className="w-4 h-4" />
                   <span className="text-sm text-gray-500">
-                    Instituto Tecnológico de Ciudad Victoria
+                    {userProfile?.faculty}
                   </span>
                 </div>
               </section>
@@ -67,7 +85,7 @@ export default function Profile() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        {userProfile?.profile?.bio && <Card>
           <CardHeader>
             <h2 className="text-xl font-semibold">
               Acerca de mi
@@ -75,12 +93,10 @@ export default function Profile() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">
-              Product leader with 10+ yrs experience building and launching products that hundreds of millions of people love
-              worldwide. Ive been part of exceptional teams that have built industry-leading mobile, web, media and VR
-              products, leading various functions including product management, UX/UI, marketing and design.
+              {userProfile?.profile?.bio}
             </p>
           </CardContent>
-        </Card>
+        </Card>}
         <Card>
           <CardHeader>
             <h2 className="text-xl font-semibold">Proyectos destacados</h2>

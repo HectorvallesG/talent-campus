@@ -23,7 +23,8 @@ export async function GET(req:Request, {params}:Params) {
           faculty: true,
           user: {
             select: {
-              email: true
+              email: true,
+              userName: true
             }
           }
         }

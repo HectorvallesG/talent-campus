@@ -8,6 +8,7 @@ export interface StudentResponse {
   user: {
     isActivated: string;
     email:       string;
+    userName:    string;
   }
 }
 

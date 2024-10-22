@@ -114,6 +114,8 @@ export async function PATCH(request: NextRequest) {
                 },
             })
 
+            console.log(session.user.id)
+
             await db.user.update({
                 where: {
                     id: session.user.id
