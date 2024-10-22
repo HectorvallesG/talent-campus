@@ -16,7 +16,7 @@ export const SideBar = () => {
               Home
             </Link>
             <Link
-              href="#"
+              href="/dashboard/activar-cuenta"
               className="w-full flex items-center py-3 px-2"
             >
               <Users className="mr-2 h-4 w-4" />

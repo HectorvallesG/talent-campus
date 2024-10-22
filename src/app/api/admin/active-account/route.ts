@@ -28,7 +28,7 @@ export async function PATCH(request: NextRequest) {
 
 
 
-        return NextResponse.json({message: 'Activado con exito', user: activeAccount}, {status: 200})
+        return NextResponse.json({message: 'Activado con exito', data: activeAccount}, {status: 200})
 
     } catch (error) {
         return NextResponse.json({message: 'Error en el servidor'}, {status: 500})
