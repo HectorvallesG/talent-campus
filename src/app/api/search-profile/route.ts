@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
             }, 
             
         })
-        
-        return NextResponse.json({data: "ok"}, {status: 200})
+        if(student.length === 0) return NextResponse.json({message: 'Usuario no encontrado'}, {status: 404})
+        return NextResponse.json({data: student}, {status: 200})
     } catch (error) {
         return NextResponse.json({message: 'Error en el servidor'}, {status: 500})
     }
