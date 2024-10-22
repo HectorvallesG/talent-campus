@@ -18,8 +18,8 @@ export async function GET(req:Request, {params}:Params) {
       });
 
 
-      NextResponse.json({data: student},{ status: 200 })
+      return NextResponse.json({data: student},{ status: 200 })
     } catch (error) {
-      NextResponse.json({ status: 500 })
+      return NextResponse.json({ status: 500 })
     }
   }
