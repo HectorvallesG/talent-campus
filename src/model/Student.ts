@@ -10,3 +10,12 @@ export interface StudentResponse {
     email:       string;
   }
 }
+
+export interface StudentSearchResponse {
+  id:       string;
+  name:     string;
+  user: {
+    email:    string;
+    userName: string;
+  }
+}

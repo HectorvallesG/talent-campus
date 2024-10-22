@@ -11,6 +11,7 @@ export default function Home() {
 
   const [projects, setProjects] = useState<ProjectResponse[]>([])
   const [loading, setLoading] = useState(false)
+  const [searchText, setSearchText] = useState('')
 
   useEffect(() => {
     setLoading(true)
@@ -21,7 +22,6 @@ export default function Home() {
       })
       .finally(() => setLoading(false))
   }, [])
-
 
   return (
       <main>
@@ -43,15 +43,17 @@ export default function Home() {
 
        <div className="max-w-5xl mx-auto">
           <section className="flex items-center my-8 ">
-            <div className="relative flex-grow">
+            <search className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
                 type="text"
                 placeholder="Encuentra un talento"
                 className="pl-10 pr-4 py-2 w-full rounded-l-full rounded-r-none border-r-0 outline-none bg-white"
               />
-            </div>
-            <Button className="rounded-l-none rounded-r-full bg-blue-600 hover:bg-blue-700">
+            </search>
+            <Button  className="rounded-l-none rounded-r-full bg-blue-600 hover:bg-blue-700">
               Buscar
             </Button>
           </section>

@@ -18,6 +18,17 @@ export async function GET(request: NextRequest) {
                     },
                     isActivated: 'true'
                 }
+            },
+            select: {
+                id: true,
+                name: true,
+
+                user: {
+                    select: {
+                        email: true,
+                        userName: true,
+                    }
+                }
             }
         })
 
