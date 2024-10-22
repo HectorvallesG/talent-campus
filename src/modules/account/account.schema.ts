@@ -80,8 +80,8 @@ export const RecruiterSchema = z.object({
   company: z.string({
     required_error: "La empresa es requerida",
   })
-  .min(10, {
-    message: "La empresa debe tener al menos 10 caracteres"
+  .min(3, {
+    message: "La empresa debe tener al menos 3 caracteres"
   })
   .trim(),
   tel: z.string({

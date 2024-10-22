@@ -40,7 +40,8 @@ export const LoginForm = () => {
       throw new Error('No se pudo comprobar la sesión')
     }
 
-    if (sessionRole.user.rol === Role.Admin || sessionRole === Role.Recruiter) {
+    console.log(sessionRole.user.rol)
+    if (sessionRole.user.rol === Role.Admin || sessionRole.user.rol === Role.Recruiter) {
       router.push('/dashboard')
     }
 
@@ -52,6 +53,21 @@ export const LoginForm = () => {
   const onSubmit = async (data: LoginSchemaModel) => {
     try {
       setLoading(true)
+      const reqAccountStatus = await fetch(`/api/user/status-account?email=${data.email}`)
+      const accountStatus = await reqAccountStatus.json()
+
+      if (reqAccountStatus.status !== 200) {
+        throw new Error('Error al verificar la cuenta')
+      }
+
+
+      if (accountStatus.data.isActivated !== 'true') {
+        return toast({
+          title: 'Error al iniciar sesión',
+          description: 'La cuenta no ha sido activada, espera a que un administrador la active',
+        })
+      }
+
       const loginStatus = await signIn('credentials', {
         redirect: false,
         email: data.email,
