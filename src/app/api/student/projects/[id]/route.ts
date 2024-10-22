@@ -1,4 +1,4 @@
-import db from '../../../../../db';
+import db from '@/db';
 import { NextResponse } from 'next/server';
 interface params {
     params: { id: string};
@@ -18,6 +18,7 @@ export async function GET(req:Request, {params}:params) {
 
         return NextResponse.json({ data: project }, { status: 200 });
     } catch (error) {
+        console.log(error);
         return NextResponse.json({ status: 500 });
     }
 }

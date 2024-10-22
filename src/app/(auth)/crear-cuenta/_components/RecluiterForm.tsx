@@ -1,25 +1,79 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { BasicAccountSchema, BasicAccountSchemaModel } from "@/modules/account/account.schema"
+import { RecruiterSchemaModel } from "@/modules/account/account.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { RecruiterSchema } from '../../../../modules/account/account.schema';
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 
 export const RecluiterForm = () => {
   
-  const form = useForm<BasicAccountSchemaModel>({
-    resolver: zodResolver(BasicAccountSchema),
+  const form = useForm<RecruiterSchemaModel>({
+    resolver: zodResolver(RecruiterSchema),
     defaultValues:{
       email: '',
       password: '',
+      name: '',
+      company: '',
+      tel: '',
+      userName: ''
     }
   })
 
+  const router = useRouter()
 
-  const onSubmit = (data:BasicAccountSchemaModel) => {
-    console.log("llego");
-    console.log(data);
+  const [loading, setLoading] = useState(false)
+
+  const { toast } =  useToast()
+  
+  const onSubmit = async (data:RecruiterSchemaModel) => {
+    try {
+      setLoading(true)
+      const req = await fetch('/api/recruiter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      if(!req.ok){
+        throw new Error('Error al crear la cuenta')
+      }
+
+
+      const loginStatus = await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password
+      })
+
+      if(loginStatus?.ok){
+        router.push('/dashboard')
+      }else{
+        throw new Error('Error al iniciar sesión')
+      }
+
+
+
+
+      console.log(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+        })
+      }
+    }finally{
+      setLoading(false)
+    }
   };
 
 
@@ -32,20 +86,76 @@ export const RecluiterForm = () => {
             <legend className="text-xl font-semibold border-b-2 pb-2 my-2 border-gray-200">
               Una cuenta para Reclutador
             </legend>
+         
           <FormField
             control={form.control}
-            name="email"
+            name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Correo</FormLabel>
+                <FormLabel>Nombre de la organización</FormLabel>
                 <FormControl>
-                  <Input placeholder="example@example.com" {...field} />
+                  <Input placeholder="Organización" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre al que debemos dirigirnos</FormLabel>
+                <FormControl>
+                  <Input placeholder="Jhon" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Número de contacto</FormLabel>
+                <FormControl>
+                  <Input placeholder="Tel" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          <div className="flex gap-2">
+             <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Correo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="example@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Nombre del usuario</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Jhon872" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+  
+          </div>
           <FormField
             control={form.control}
             name="password"
@@ -60,7 +170,9 @@ export const RecluiterForm = () => {
             )}
           />
          <Button className="w-full bg-black hover:bg-gray-800 text-white mt-4">
-          Crear cuenta
+          {
+            loading ? 'Creando cuenta...' : 'Crear cuenta'
+          }
          </Button>
         </form>
       </Form>

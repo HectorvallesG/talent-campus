@@ -1,40 +1,113 @@
 "use client"
 
+import { GirdProjects } from "@/components/GirdProjects";
 import { JobCard } from "@/components/JobCard";
+import { LoadingPages } from "@/components/LoadingPages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Info, Mail } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ProjectResponse } from "@/model/Projects";
+import { StudentResponde } from "@/model/Student";
+import { BookMarked, Home, Info, Mail } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const TAGS = [
-  "Next.js",
-  "React",
-  "TailwindCSS",
-  "e-Commerce",
-  "Web Development",
-];
 
 export default function Project() {
 
-  return (
+  const params = useParams()
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [project, setProject] = useState<ProjectResponse>()
+  const [fullUrl, setFullUrl] = useState('')
+  const [user, setUser] = useState<StudentResponde>()
+  
+  const [loadingUser, setLoadingUser] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    const idProject = params.id
+    setFullUrl(window.location.href)
+    fetch(`/api/student/projects/${idProject}`)
+      .then(res => res.json())
+      .then(data => {
+        setProject(data.data)
+        console.log(data.data)
+      })
+      .finally(() => setLoading(false))
+
+  }, [params])
+
+
+  useEffect(() => {
+    setLoadingUser(true)
+    fetch(`/api/student/${project?.studentId}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        setUser(data.data)
+      })
+      .finally(() => setLoadingUser(false))
+
+
+  }, [project?.studentId])
+
+  // array split sin espacio y con coma ambas formas
+  const arrayTags = project?.tags ? project.tags.split(', ') : []
+
+  const sendMail = (mail:string) => {
+    window.location.href = `mailto:${mail}`
+  }
+
+  if(!project && !loading){
+    return(
+      <main className="flex justify-center items-center flex-col">
+        <h1 className="text-center font-semibold text-3xl">
+          Proyecto no encontrado
+        </h1>
+
+        <Link href="/" className={buttonVariants({
+          variant: "outline",
+          className: "mt-4 flex items-center gap-1"
+        })}>
+          Regresar al inicio
+          <Home className="w-4 h-4 ml-2" />
+        </Link>
+      </main>
+    )
+  }
+
+  return project && !loading && (
     <>
       <main className="max-w-6xl mx-auto">
         <header className="flex justify-between items-center bg-white py-3 px-6 shadow-md rounded-md">
           <div  className="flex gap-4 items-center">
             <Avatar className="w-16 h-16 border-4 border-white">
-              <AvatarImage alt="Phoenix Baker" src="/placeholder.svg?height=128&width=128" />
-              <AvatarFallback>PB</AvatarFallback>
+              <AvatarFallback>
+                {
+                  user?.name && user?.name.split(' ').map((name) => name[0])
+                }
+              </AvatarFallback>
             </Avatar>
   
-            <h2 className="font-semibold text-2xl">
-              Phoenix Baker
-            </h2>
+            {!loadingUser ? <div>
+              <h2 className="font-semibold text-2xl">
+                {user?.name}
+              </h2>
+  
+              <p className="flex gap-1 items-center font-semibold">
+                <BookMarked className="w-4 h-4 mr-2" />
+               {user?.specialty}
+              </p>
+            </div> : <Skeleton className="w-[200px] h-4" />}
           </div>
 
-          <Button>
+          {!loadingUser ? <Button onClick={() => sendMail(user?.user.email ?? '')}>
             Enviar correo
             <Mail className="w-4 h-4 ml-2" />
-          </Button>
+          </Button> : <Skeleton className="w-[200px] h-4" />}
         </header>
 
         <section className="px-6 py-3 mt-4 rounded-md">
@@ -44,8 +117,8 @@ export default function Project() {
 
           <div className="flex items-center gap-2 my-4">
             <div className="bg-white py-2 px-4 rounded-lg flex-1">
-              {
-                window.location.href
+              {loading ? <Skeleton className="w-[200px] h-4" /> :
+                fullUrl
               }
             </div>
             <Button variant="outline" onClick={() => {
@@ -65,31 +138,39 @@ export default function Project() {
           <article className="bg-white py-3 px-6">
             <div className="flex gap-4 items-center mb-4">
               <h1 className="font-semibold text-3xl">
-                Desarrolo de e-Commerse con Next.js
+                {loading ? <Skeleton className="w-[200px] h-4" /> : project?.title}
               </h1>
               <div className="flex flex-wrap gap-1">
-                {TAGS.map((tag) => (
+                {arrayTags.map((tag) => (
                   <span key={tag} className="text-xs text-white bg-blue-500 px-2 py-1 rounded-full mr-2">
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="flex flex-col">
+            {!loading ? <div className="flex flex-col">
               <span className="text-gray-500 font-bold">
                 Enero 8, 2024 a las 10:00 am
               </span>
-              <a className={buttonVariants({
+              <a target="_blank" href={project?.url} className={buttonVariants({
                 variant: "outline",
                 className: "cursor-pointer mt-2"
               })}>
                 <Info className="w-4 h-4 mr-2" />
                   Más información sobre el proyecto
               </a>
-            </div>
+            </div> : <Skeleton className="w-[200px] h-4" />}
 
             <p className="mt-4">
-               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nihil rem voluptatum porro unde quam cum, nemo excepturi facilis. Porro eaque exercitationem maiores, mollitia blanditiis accusamus necessitatibus laboriosam doloribus quibusdam quos magni temporibus, error quis ipsam. Praesentium harum sed voluptas, explicabo in dolores esse. Nostrum doloremque molestiae harum fugiat laudantium aliquam quae magni reiciendis aut, delectus eos odit eum hic rem. Adipisci delectus facilis autem! Repellendus sint accusantium eligendi delectus at, velit sit tenetur facere, nobis omnis id fugiat asperiores quo ratione autem aspernatur accusamus ab eius et? A dicta distinctio nulla. Cum fuga omnis minima incidunt eligendi, at nemo reiciendis necessitatibus aspernatur explicabo, nisi nostrum eum error aliquid mollitia numquam, vero ut aliquam et expedita? Dolor sint atque id? Quasi aliquid accusamus laudantium ratione delectus unde earum commodi, dolore porro officia, dolores corporis quisquam doloremque. Eum, sequi? Quo cumque, porro non enim ratione quod et laboriosam itaque eveniet! Quas, quidem alias repudiandae eligendi illum.
+               {
+                 loading ? <div className="flex gap-2 flex-col">
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+
+                  </div> : project?.description
+                }
             </p>
           </article>
         </section>
@@ -98,27 +179,24 @@ export default function Project() {
               Más proyectos
             </h3>
 
-            <article className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 ">
+            <GirdProjects>
               <JobCard
                 title="Frontend Developer"
-                experience="Developer, design, frontend"
+                tags="Developer, design, frontend"
                 description="We are looking for a frontend developer to join our team"
-                timePosted="2 days ago"
               />
               <JobCard
                 title="Frontend Developer"
-                experience="Developer, design, frontend"
+                tags="Developer, design, frontend"
                 description="We are looking for a frontend developer to join our team"
-                timePosted="2 days ago"
               />
               <JobCard
                 title="Frontend Developer"
-                experience="Developer, design, frontend"
+                tags="Developer, design, frontend"
                 description="We are looking for a frontend developer to join our team"
-                timePosted="2 days ago"
               />
 
-            </article>
+            </GirdProjects>
         </section>
       </main> 
     </>

@@ -14,6 +14,18 @@ export async function GET(req:Request, {params}:Params) {
       const student = await db.student.findUnique({
         where: {
           id
+        },
+        select:{
+          id: true,
+          name: true,
+          lastName: true,
+          specialty: true,
+          faculty: true,
+          user: {
+            select: {
+              email: true
+            }
+          }
         }
       });
 
