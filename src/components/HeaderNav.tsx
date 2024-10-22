@@ -6,6 +6,8 @@ import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { signOut, useSession } from "next-auth/react"
+import Link from "next/link"
+import { Role } from "@/model/Role"
 
 export const HeaderNav = () => {
 
@@ -38,9 +40,9 @@ export const HeaderNav = () => {
             </Button>  
           </search>
           <nav className="flex items-center space-x-6 text-sm text-gray-600">
-            <a href="#">Inicio</a>
-            <a href="#">Mi perfil</a>
-            <a href="#">Publicar proyectos</a>
+            {session.status !== 'authenticated' && <Link	 href="/iniciar">Inicio </Link>}
+            {session.status === 'authenticated' && session.data.user.rol === Role.Student && <Link href={`/profile/${session.data?.user.userName}`}>Mi perfil</Link>}
+            {session.data?.user.rol === Role.Student && <Link href="/nuevo-proyecto">Publicar proyectos</Link>}
           {session.status === 'authenticated' &&  <Button onClick={() => signOut()}>
               Salir
             </Button>}
