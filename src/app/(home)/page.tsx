@@ -18,10 +18,22 @@ export default function Home() {
     fetch('/api/student/projects')
       .then(res => res.json())
       .then(data => {
+        console.log(data)
         setProjects(data.data)
       })
       .finally(() => setLoading(false))
   }, [])
+
+  const handleSearch = () => {
+    setLoading(true)
+    fetch(`/api/projects/${searchText}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        setProjects(data.data)
+      })
+      .finally(() => setLoading(false))
+  }
 
   return (
       <main>
@@ -53,7 +65,7 @@ export default function Home() {
                 className="pl-10 pr-4 py-2 w-full rounded-l-full rounded-r-none border-r-0 outline-none bg-white"
               />
             </search>
-            <Button  className="rounded-l-none rounded-r-full bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSearch} className="rounded-l-none rounded-r-full bg-blue-600 hover:bg-blue-700">
               Buscar
             </Button>
           </section>
