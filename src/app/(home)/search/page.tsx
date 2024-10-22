@@ -49,7 +49,7 @@ export default function SearchPage() {
                 {loading && <p>Cargando...</p>}
                 {error && <p>{error}</p>}
                 {users && users.map((user) => (
-                    <Link key={user.id} href={`/profile/hector73`}>
+                    <Link key={user.id} href={`/profile/${user.user.userName}`}>
                     <Card className="overflow-hidden">
                         <CardHeader className="flex flex-row items-center ">
                           

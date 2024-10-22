@@ -1,11 +1,23 @@
+"use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { MapPin, Mail, School } from "lucide-react"
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect } from 'react';
 
 
 export default function Profile() {
+  const params = useParams()
+
+  useEffect(() => {
+    fetch(`/api/student/profile?userName=${params.userName}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+      })
+  }, [params])
   return (
       <main className="max-w-3xl mx-auto space-y-6">
         <Card>

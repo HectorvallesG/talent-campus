@@ -1,5 +1,9 @@
-import db from "../../../../db";
+import { getServerSession } from "next-auth";
+import db from "@/db";
 import { NextRequest, NextResponse } from "next/server";
+import { options } from "../../auth/[...nextauth]/options";
+import { ProfileSchema } from "@/modules/account/account.schema";
+import { Role } from "@/model/Role";
 
 
 export async function GET(request: NextRequest) {
@@ -14,7 +18,9 @@ export async function GET(request: NextRequest) {
         const student = await db.student.findFirst({
             where: {
                 user: {
-                    userName: userName
+                    userName: {
+                        contains: userName
+                    }
                 }
             },
             select: {
@@ -26,6 +32,7 @@ export async function GET(request: NextRequest) {
                 user:{
                     select:{
                         email: true,
+                        userName: true,
                         id: true
                     },
                 },
@@ -33,6 +40,7 @@ export async function GET(request: NextRequest) {
                     select:{
                         bio: true,
                         city: true,
+                        career: true,
                         id: true
                     }
                 }
@@ -45,6 +53,94 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({data: student}, {status: 200})
     } catch (error) {
+        return NextResponse.json({message: 'Error en el servidor'}, {status: 500})
+    }
+}
+
+export async function PATCH(request: NextRequest) {
+    try {
+        const session = await getServerSession(options)
+
+        if(!session || session.user.rol !== Role.Student) return NextResponse.json({message: 'No autorizado'}, {status: 401})
+
+        const currentUser = await db.user.findUnique({
+            where: {
+                id: session.user.id
+            },
+            select: {
+                id: true,
+                student: {
+                    select: {
+                        id: true,
+                        profile: {
+                            select: {
+                                id: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if(!currentUser) return NextResponse.json({message: 'La sesión del usuario a sido eliminada'}, {status: 401})
+        
+        const data = await request.json()
+
+        const safeData = ProfileSchema.safeParse(data)
+      
+        if(!safeData.success) return NextResponse.json({message: safeData.error.errors[0].message}, {status: 400})
+
+        await db.$transaction(async (db) => {
+
+            console.log(currentUser)
+            const profileStudent =  db.profileStudent.upsert({
+                where: {
+                    studentId: currentUser.student?.id
+                },
+                create: {
+                    bio: safeData.data.bio,
+                    city: safeData.data.city,
+                    career: safeData.data.career,
+                    student: {
+                        connect: {
+                            id: currentUser.student?.id
+                        }
+                    }
+                },
+                update: {
+                    bio: safeData.data.bio,
+                    city: safeData.data.city,
+                    career: safeData.data.career
+                },
+            })
+
+            const  user =  db.user.update({
+                where: {
+                    id: session.user.id
+                },
+                data: {
+                    userName: safeData.data.userName,
+                    email: safeData.data.email
+                }
+            })
+
+            const student = db.student.update({
+                where: {
+                    userId: currentUser.student?.id
+                },
+                data: {
+                    faculty: safeData.data.faculty,
+                }
+            })
+
+            await Promise.all([profileStudent, user, student])
+
+
+        })
+
+        return NextResponse.json({message: "ok"}, {status: 200})
+    } catch (error) {
+        console.log(error)
         return NextResponse.json({message: 'Error en el servidor'}, {status: 500})
     }
 }

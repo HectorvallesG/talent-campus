@@ -1,3 +1,4 @@
+import exp from "constants";
 import { z } from "zod";
 
 
@@ -100,6 +101,45 @@ export const RecruiterSchema = z.object({
   .trim(),
 }).merge(BasicAccountSchema);
 
+
+export const ProfileSchema = z.object({
+  email: z.string({
+    required_error: "El correo es requerido",
+  }).email({
+    message: "El correo no es válido",
+  }).trim(),
+  faculty: z.string({
+    required_error: "La facultad es requerida",
+  }).min(3, {
+    message: "La facultad debe tener al menos 3 caracteres",
+  }).trim(),
+  userName: z.string({
+    required_error: "El nombre de usuario es requerido",
+  }).min(6, {
+    message: "El nombre de usuario debe tener al menos 6 caracteres",
+  }).trim(),
+  bio: z.string({
+    required_error: "La biografía es requerida",
+  })
+  .min(10, {
+    message: "La biografía debe tener al menos 10 caracteres",
+  })
+  .trim(),
+  city: z.string({
+    required_error: "La ciudad es requerida",
+  })
+  .min(3, {
+    message: "La ciudad debe tener al menos 3 caracteres",
+  })
+  .trim(),
+  career: z.string({
+    required_error: "La carrera es requerida",
+  }).min(3, {
+    message: "La carrera debe tener al menos 3 caracteres",
+  }).trim(),
+});
+
+export type ProfileSchemaModel = z.infer<typeof ProfileSchema>;
 export type BasicAccountSchemaModel = z.infer<typeof BasicAccountSchema>;
 export type StudentSchemaModel = z.infer<typeof StudentSchema>;
 export type LoginSchemaModel = z.infer<typeof loginSchema>;
