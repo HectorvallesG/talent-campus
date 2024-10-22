@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
                     select:{
                         userName: true,
                         isActivated: true,
+                        email: true
                     }
                 }
             }

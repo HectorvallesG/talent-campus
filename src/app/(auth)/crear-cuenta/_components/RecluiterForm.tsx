@@ -7,9 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { RecruiterSchema } from '../../../../modules/account/account.schema';
 import { useState } from "react"
-import { signIn } from "next-auth/react"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
 
 
 export const RecluiterForm = () => {
@@ -26,7 +24,6 @@ export const RecluiterForm = () => {
     }
   })
 
-  const router = useRouter()
 
   const [loading, setLoading] = useState(false)
 
@@ -48,19 +45,10 @@ export const RecluiterForm = () => {
       }
 
 
-      const loginStatus = await signIn('credentials', {
-        redirect: false,
-        email: data.email,
-        password: data.password
+      toast({
+        title: 'Cuenta creada',
+        description: 'La cuenta ha sido creada con exito, espera que un adminsitrador la active para que puedas ingresar',
       })
-
-      if(loginStatus?.ok){
-        router.push('/dashboard')
-      }else{
-        throw new Error('Error al iniciar sesión')
-      }
-
-
 
 
       console.log(data);
