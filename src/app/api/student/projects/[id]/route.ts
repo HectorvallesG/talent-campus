@@ -8,7 +8,7 @@ export async function GET(req:Request, {params}:params) {
     try {
         const project = await db.projects.findUnique({
             where: {
-                id,
+                id
             },
         });
 
