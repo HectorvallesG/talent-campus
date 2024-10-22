@@ -1,9 +1,15 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
 import { StudentSchema, StudentSchemaModel } from "@/modules/account/account.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 
@@ -21,9 +27,55 @@ export const StudentForm = () => {
     }
   })
 
-  const onSubmit = (data:StudentSchemaModel) => {
-    console.log("llego");
-    console.log(data);
+
+  const { toast } =  useToast()
+  const [loading, setLoading] = useState(false)
+  const router =  useRouter()
+  
+
+
+  const onSubmit = async (data:StudentSchemaModel) => {
+    try {
+      setLoading(true)
+      const req = await fetch('/api/student', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      if(!req.ok){
+        throw new Error('Error al crear la cuenta')
+      }
+
+
+      const loginStatus = await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password
+      })
+
+      if(loginStatus?.ok){
+        router.push('/nuevo-proyecto')
+      }else{
+        throw new Error('Error al iniciar sesión')
+      }
+
+
+
+
+      console.log(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+        })
+      }
+    }finally{
+      setLoading(false)
+    }
   };
 
 
@@ -58,7 +110,7 @@ export const StudentForm = () => {
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input placeholder="*******" {...field} />
+                    <Input type="password" placeholder="*******" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -135,7 +187,9 @@ export const StudentForm = () => {
                     )}
                   />
            <Button className="w-full bg-black hover:bg-gray-800 text-white mt-4">
-            Crear cuenta
+            {
+              loading ? 'Creando cuenta...' : 'Crear cuenta'
+            }
            </Button>
   
   

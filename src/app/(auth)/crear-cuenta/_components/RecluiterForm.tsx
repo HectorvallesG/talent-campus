@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -5,6 +6,10 @@ import { RecruiterSchemaModel } from "@/modules/account/account.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { RecruiterSchema } from '../../../../modules/account/account.schema';
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 
 export const RecluiterForm = () => {
@@ -21,10 +26,54 @@ export const RecluiterForm = () => {
     }
   })
 
+  const router = useRouter()
 
-  const onSubmit = (data:RecruiterSchemaModel) => {
-    console.log("llego");
-    console.log(data);
+  const [loading, setLoading] = useState(false)
+
+  const { toast } =  useToast()
+  
+  const onSubmit = async (data:RecruiterSchemaModel) => {
+    try {
+      setLoading(true)
+      const req = await fetch('/api/recruiter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      if(!req.ok){
+        throw new Error('Error al crear la cuenta')
+      }
+
+
+      const loginStatus = await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password
+      })
+
+      if(loginStatus?.ok){
+        router.push('/dashboard')
+      }else{
+        throw new Error('Error al iniciar sesión')
+      }
+
+
+
+
+      console.log(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+        })
+      }
+    }finally{
+      setLoading(false)
+    }
   };
 
 
@@ -121,7 +170,9 @@ export const RecluiterForm = () => {
             )}
           />
          <Button className="w-full bg-black hover:bg-gray-800 text-white mt-4">
-          Crear cuenta
+          {
+            loading ? 'Creando cuenta...' : 'Crear cuenta'
+          }
          </Button>
         </form>
       </Form>
