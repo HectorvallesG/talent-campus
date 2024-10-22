@@ -16,8 +16,8 @@ export async function GET(req: NextRequest) {
                 userId: true,
                 user:{
                     select:{
-                        userName: true
-
+                        userName: true,
+                        isActivated: true,
                     }
                 }
             }

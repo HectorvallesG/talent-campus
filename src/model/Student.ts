@@ -4,8 +4,8 @@ export interface StudentResponse {
   lastName:  string;
   faculty:   string;
   specialty: string;
+  userId:   string;
   user: {
-    id:          string;
     isActivated: string;
     email:       string;
   }

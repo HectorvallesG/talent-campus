@@ -44,6 +44,8 @@ export default function ActiveAccount() {
     .then((data) => {
       const studentData = data.data as StudentResponse[];
 
+      console.log(studentData)
+
       const students = studentData.map(student => {
         return {
           name: student.name,
@@ -52,9 +54,10 @@ export default function ActiveAccount() {
           specialty: student.specialty,
           email: student.user.email,
           isActivated: student.user.isActivated === 'true',
-          idUser: student.user.id
+          idUser: student.userId
         }
       })
+
 
 
       setStudents(students);
