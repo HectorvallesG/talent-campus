@@ -18,9 +18,7 @@ export async function GET(request: NextRequest) {
         const student = await db.student.findFirst({
             where: {
                 user: {
-                    userName: {
-                        contains: userName
-                    }
+                    userName
                 }
             },
             select: {
