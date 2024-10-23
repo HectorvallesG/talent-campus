@@ -77,7 +77,7 @@ export default function Home() {
               ))
             }
             {
-              projects.length > 0 && projects.map((project) => (
+              projects?.length > 0 && projects.map((project) => (
                 <JobCard
                   key={project.id}
                   idProject={project.id}
