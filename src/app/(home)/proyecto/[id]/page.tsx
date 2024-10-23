@@ -189,18 +189,30 @@ export default function Project() {
                 title="Frontend Developer"
                 tags="Developer, design, frontend"
                 description="We are looking for a frontend developer to join our team"
+                url="/proyecto/1"
+                idProject="as"
+                createdAt="2 days ago"
+                id="s"
               />
               <JobCard
                 title="Frontend Developer"
                 tags="Developer, design, frontend"
                 description="We are looking for a frontend developer to join our team"
+                url="/proyecto/1"
+                idProject="as"
+                createdAt="2 days ago"
+                id="s2"
               />
               <JobCard
                 title="Frontend Developer"
                 tags="Developer, design, frontend"
                 description="We are looking for a frontend developer to join our team"
+                url="/proyecto/1"
+                idProject="as"
+                createdAt="2 days ago"
+                id="s22"
               />
-
+            
             </GirdProjects>
         </section>
       </main> 

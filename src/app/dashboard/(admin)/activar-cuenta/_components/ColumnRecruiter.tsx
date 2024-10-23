@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { SwitchActivUser } from "../page";
+import { SwitchActivUser } from "./SwitchActivUser";
 
 
 export interface RecruiterDataColumn {
