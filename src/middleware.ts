@@ -85,7 +85,6 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/api/admin/:path*',
-    '/api/recruiter/:path*',
     '/profile/:userName/edit',
     '/nuevo-proyecto',
   ],

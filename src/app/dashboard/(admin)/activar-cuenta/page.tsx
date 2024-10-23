@@ -21,6 +21,8 @@ export default function ActiveAccount() {
     .then((data) => {
       const recruitersData = data.data as RecruiterResponse[];
 
+      console.log(recruitersData)
+
       const recruiters = recruitersData.map(recruiter => {
         return {
           name: recruiter.name,
