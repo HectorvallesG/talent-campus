@@ -1,5 +1,5 @@
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { University } from "lucide-react"
+import { PanelTopClose, University } from "lucide-react"
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 import { Role } from "@/model/Role";
@@ -53,8 +53,8 @@ export default async function AccountLayout({ children }: LayoutProps) {
             Alumnos certificados por el campus 
           </span>
           <span className="text-white flex items-center gap-2 w-[250px] border rounded-md  p-2">
-            <University  className="size-10 font-light"/>
-            Alumnos certificados por el campus 
+            <PanelTopClose  className="size-10 font-light"/>
+            Proyectos de calidad
           </span>
         </div>
       </section>
