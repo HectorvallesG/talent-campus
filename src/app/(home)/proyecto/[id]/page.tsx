@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectResponse } from "@/model/Projects";
 import { StudentResponse } from "@/model/Student";
-import { BookMarked, Home, Info, Mail } from "lucide-react";
+import { BookMarked, Home, Info, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -117,7 +117,7 @@ export default function Project() {
 
         <section className="px-6 py-3 mt-4 rounded-md">
           <h4 className="text-blue-950 font-semibold text-2xl">
-            Comparte el perfil de Phoenix Baker
+            Comparte el perfil de {user?.name}
           </h4>
 
           <div className="flex items-center gap-2 my-4">
