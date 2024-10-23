@@ -122,7 +122,7 @@ export const LoginForm = () => {
               <FormItem>
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="example@example.com" {...field} />
+                  <Input type="password" placeholder="***********" {...field} />
                 </FormControl>
               </FormItem>
             )}
