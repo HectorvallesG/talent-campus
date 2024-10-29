@@ -6,7 +6,7 @@ export const SideBar = () => {
   return (
      <aside className="w-64 bg-white shadow-md h-screen">
         <div className="pt-10 px-5">
-          <h1 className="text-2xl font-bold text-gray-800 text-center">Talen Campus</h1>
+          <h1 className="text-2xl font-bold text-gray-800 text-center">Talent Campus</h1>
           <nav className="mt-4">
             <Link
               href="/dashboard"
