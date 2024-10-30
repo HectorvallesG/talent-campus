@@ -1,10 +1,8 @@
 "use client"
 
 import PageContainer from "@/components/layouts/PageContainer";
-import { Avatar } from "@/components/ui/avatar";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { StudentSearchResponse } from "@/model/Student";
-import { AvatarFallback } from "@radix-ui/react-avatar";
 import Link from "next/link";
 
 import { useSearchParams } from 'next/navigation'
